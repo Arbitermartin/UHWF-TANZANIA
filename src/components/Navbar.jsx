@@ -58,10 +58,10 @@ export const Navbar = () => {
 
                     {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center gap-8">
-                        <a href="#" className="hover:text-yellow-300 transition-colors font-medium">
+                        <a href="/" className="hover:text-yellow-300 transition-colors font-medium">
                             Home
                         </a>
-                        <a href="#" className="hover:text-yellow-300 transition-colors font-medium">
+                        <a href="/about" className="hover:text-yellow-300 transition-colors font-medium">
                             About Us
                         </a>
 
@@ -104,7 +104,7 @@ export const Navbar = () => {
                         <a href="#" className="hover:text-yellow-300 transition-colors font-medium">
                             Our Team
                         </a>
-                        <a href="#" className="hover:text-yellow-300 transition-colors font-medium">
+                        <a href="contact" className="hover:text-yellow-300 transition-colors font-medium">
                             Contact Us
                         </a>
 
