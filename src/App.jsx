@@ -5,13 +5,62 @@ import { Footer } from './components/Footer'
 
 function App() {
   const [theme, setTheme] = useState(() => {
-    // Check localStorage or system preference
     if (typeof window !== 'undefined') {
       return localStorage.getItem('theme') ||
         (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
     }
     return 'light'
   })
+
+  // Testimonials data + slider state
+  const testimonials = [
+    {
+      name: 'Amina Juma',
+      role: 'Community Leader, Arusha',
+      image: 'https://randomuser.me/api/portraits/women/44.jpg',
+      quote:
+        'UHWF has transformed how our village interacts with wildlife. Through their land-use planning programs, we now coexist peacefully with elephants while protecting our farms.',
+    },
+    {
+      name: 'Dr. Joseph Mwangi',
+      role: 'Wildlife Researcher',
+      image: 'https://randomuser.me/api/portraits/men/32.jpg',
+      quote:
+        'The strategic research and data-driven approach of UHWF is outstanding. Their work is filling critical knowledge gaps in human-wildlife conflict in Tanzania.',
+    },
+    {
+      name: 'Grace Kimaro',
+      role: 'Teacher & Conservation Advocate',
+      image: 'https://randomuser.me/api/portraits/women/68.jpg',
+      quote:
+        'The capacity building workshops organized by UHWF empowered our youth. Students now understand the value of conservation and actively participate in local initiatives.',
+    },
+    {
+      name: 'Peter Mallya',
+      role: 'Farmer, Kilimanjaro Region',
+      image: 'https://randomuser.me/api/portraits/men/75.jpg',
+      quote:
+        'Before UHWF came, we lost crops every season. Now with their support and training, both our livelihoods and the wildlife are safer. Truly life-changing work.',
+    },
+  ]
+
+  const [current, setCurrent] = useState(0)
+
+  // Auto-slide every 5 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1))
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [testimonials.length])
+
+  const prevSlide = () => {
+    setCurrent(current === 0 ? testimonials.length - 1 : current - 1)
+  }
+
+  const nextSlide = () => {
+    setCurrent(current === testimonials.length - 1 ? 0 : current + 1)
+  }
 
   useEffect(() => {
     const root = document.documentElement
@@ -31,7 +80,6 @@ function App() {
       <section className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-
             {/* Left Content */}
             <div className="order-2 lg:order-1">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#1a2e1f] tracking-tight mb-6">
@@ -48,7 +96,6 @@ function App() {
                 strategic research, capacity building, and networking.
               </p>
 
-              {/* CTA Buttons */}
               <div className="flex flex-wrap gap-4">
                 <a
                   href="/register"
@@ -73,7 +120,6 @@ function App() {
                   alt="Lush green forest and river in Tanzania"
                   className="w-full h-[320px] sm:h-[400px] lg:h-[480px] object-cover"
                 />
-                {/* Optional decorative overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
               </div>
             </div>
@@ -151,8 +197,94 @@ function App() {
         </div>
       </section>
 
+      {/* ==================== TESTIMONIALS SLIDESHOW ==================== */}
+      <section className="bg-[#2F5D3A] py-16 lg:py-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">What People Say</h2>
+            <div className="w-20 h-1 bg-[#F5A623] mx-auto"></div>
+          </div>
+
+          <div className="relative">
+            {/* Slides */}
+            <div className="overflow-hidden">
+              <div
+                className="flex transition-transform duration-700 ease-in-out"
+                style={{ transform: `translateX(-${current * 100}%)` }}
+              >
+                {testimonials.map((item, index) => (
+                  <div key={index} className="w-full flex-shrink-0 px-4">
+                    <div className="bg-white rounded-2xl p-8 sm:p-10 shadow-xl max-w-3xl mx-auto text-center">
+                      {/* Quote Icon */}
+                      <svg
+                        className="w-12 h-12 text-[#F5A623] mx-auto mb-6 opacity-80"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                      </svg>
+
+                      <p className="text-gray-700 text-lg sm:text-xl leading-relaxed mb-8 italic">
+                        "{item.quote}"
+                      </p>
+
+                      <div className="flex items-center justify-center gap-4">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-14 h-14 rounded-full object-cover border-4 border-[#F5A623]"
+                        />
+                        <div className="text-left">
+                          <h4 className="font-bold text-[#1a2e1f] text-lg">{item.name}</h4>
+                          <p className="text-sm text-gray-500">{item.role}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Previous Button */}
+            <button
+              onClick={prevSlide}
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 sm:-translate-x-6 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/20 hover:bg-[#F5A623] text-white flex items-center justify-center transition-colors shadow-lg"
+              aria-label="Previous testimonial"
+            >
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            {/* Next Button */}
+            <button
+              onClick={nextSlide}
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 sm:translate-x-6 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/20 hover:bg-[#F5A623] text-white flex items-center justify-center transition-colors shadow-lg"
+              aria-label="Next testimonial"
+            >
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Dots */}
+          <div className="flex justify-center gap-2.5 mt-8">
+            {testimonials.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrent(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${current === index ? 'bg-[#F5A623] w-8' : 'bg-white/40 hover:bg-white/70'
+                  }`}
+                aria-label={`Go to testimonial ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ==================== IMPACT / STATS SECTION ==================== */}
-      <section className="bg-[#2F5D3A] py-14 lg:py-16">
+      <section className="bg-[#1e3a24] py-14 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             <div>
@@ -201,6 +333,7 @@ function App() {
           </div>
         </div>
       </section>
+
       <Footer />
     </div>
   )
